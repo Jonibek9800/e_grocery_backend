@@ -56,7 +56,7 @@ class AdminController extends Controller
                     'email' => $request->get('email'),
                     'password' => Hash::make($request->get('password')),
                     'poster_path' => $poster_name,
-                    'role_of_use_id' => $request->get('role_id'),
+                    'role_of_user_id' => $request->get('role_id'),
                 ]);
                 if ($user == null) {
                     return response()->json([
@@ -66,18 +66,32 @@ class AdminController extends Controller
                 } else {
                     return response()->json([
                         "success" => true,
-                        "message" => "user created successfully"
+                        "message" => "user created successfully",
+                        "user" => $user
                     ]);
                 }
             } else {
-                User::create([
+                $user = User::create([
                     'name' => $request->get('name'),
                     'phone_number' => $request->get('phone_number'),
                     'email' => $request->get('email'),
                     'password' => Hash::make($request->get('password')),
                     'poster_path' => null,
-                    'role_of_use_id' => $request->get('role_id'),
+                    'role_of_user_id' => $request->get('role_id'),
                 ]);
+
+                if ($user == null) {
+                    return response()->json([
+                        "success" => false,
+                        "message" => "User not created please check your details and try again"
+                    ]);
+                } else {
+                    return response()->json([
+                        "success" => true,
+                        "message" => "user created successfully",
+                        "user" => $user
+                    ]);
+                }
             }
         } catch (\Throwable $th) {
             return response()->json([
