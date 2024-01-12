@@ -37,5 +37,5 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::get("/get/users", [AdminController::class, "get_users"]);
     Route::get("get/user/role", [AdminController::class, "get_user_role"]);
     Route::post("/create/user", [AdminController::class, "create_user"]);
-
+    Route::delete("/delete/user/{id}", [AdminController::class, "remove_user"]);
 });

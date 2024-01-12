@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserValidate;
 use App\Models\CarouselPoster;
 use App\Models\Category;
 use App\Models\Product;
@@ -37,60 +38,69 @@ class AdminController extends Controller
     public function create_user(Request $request)
     {
         try {
-            if ($request->file('poster')) {
-                $poster = $request->file('poster');
-
-                $poster_format = $poster->getClientOriginalExtension();
-
-                $poster_name = "image_" . Str::random(30) . "." . $poster_format;
-                $save_poster = Image::make($poster);
-
-                $save_poster->resize(300, 250, function ($constrains) {
-                    $constrains->aspectRatio();
-                });
-                $save_poster->save(storage_path('app/public/img/persons/' . $poster_name));
-
-                $user = User::create([
-                    'name' => $request->get('name'),
-                    'phone_number' => $request->get('phone_number'),
-                    'email' => $request->get('email'),
-                    'password' => Hash::make($request->get('password')),
-                    'poster_path' => $poster_name,
-                    'role_of_user_id' => $request->get('role_id'),
+            $user = User::where("email", $request->get("email"))->first();
+            if ($user) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "A user with this email already exists",
+                    "users" => $user
                 ]);
-                if ($user == null) {
-                    return response()->json([
-                        "success" => false,
-                        "message" => "User not created please check your details and try again"
-                    ]);
-                } else {
-                    return response()->json([
-                        "success" => true,
-                        "message" => "user created successfully",
-                        "user" => $user
-                    ]);
-                }
             } else {
-                $user = User::create([
-                    'name' => $request->get('name'),
-                    'phone_number' => $request->get('phone_number'),
-                    'email' => $request->get('email'),
-                    'password' => Hash::make($request->get('password')),
-                    'poster_path' => null,
-                    'role_of_user_id' => $request->get('role_id'),
-                ]);
+                if ($request->file('poster')) {
+                    $poster = $request->file('poster');
 
-                if ($user == null) {
-                    return response()->json([
-                        "success" => false,
-                        "message" => "User not created please check your details and try again"
+                    $poster_format = $poster->getClientOriginalExtension();
+
+                    $poster_name = "image_" . Str::random(30) . "." . $poster_format;
+                    $save_poster = Image::make($poster);
+
+                    $save_poster->resize(300, 250, function ($constrains) {
+                        $constrains->aspectRatio();
+                    });
+                    $save_poster->save(storage_path('app/public/img/persons/' . $poster_name));
+
+                    $user = User::create([
+                        'name' => $request->get('name'),
+                        'phone_number' => $request->get('phone_number'),
+                        'email' => $request->get('email'),
+                        'password' => Hash::make($request->get('password')),
+                        'poster_path' => $poster_name,
+                        'role_of_user_id' => $request->get('role_id'),
                     ]);
+                    if ($user == null) {
+                        return response()->json([
+                            "success" => false,
+                            "message" => "User not created please check your details and try again"
+                        ]);
+                    } else {
+                        return response()->json([
+                            "success" => true,
+                            "message" => "user created successfully",
+                            "user" => $user
+                        ]);
+                    }
                 } else {
-                    return response()->json([
-                        "success" => true,
-                        "message" => "user created successfully",
-                        "user" => $user
+                    $user = User::create([
+                        'name' => $request->get('name'),
+                        'phone_number' => $request->get('phone_number'),
+                        'email' => $request->get('email'),
+                        'password' => Hash::make($request->get('password')),
+                        'poster_path' => null,
+                        'role_of_user_id' => $request->get('role_id'),
                     ]);
+
+                    if ($user == null) {
+                        return response()->json([
+                            "success" => false,
+                            "message" => "User not created please check your details and try again"
+                        ]);
+                    } else {
+                        return response()->json([
+                            "success" => true,
+                            "message" => "user created successfully",
+                            "user" => $user
+                        ]);
+                    }
                 }
             }
         } catch (\Throwable $th) {
@@ -101,14 +111,17 @@ class AdminController extends Controller
         }
     }
 
-    public function remove_user($user_id)
+    public function remove_user($id)
     {
-        $user = User::find($user_id);
+        // $user = new User();
+        // return $user;
+        $user = User::find($id);
         $user->tokens()->delete();
+        $user->delete();
 
         return response()->json([
             "success" => true,
-            "message" => "droped user successfully"
+            "message" => "dropped user successfully"
         ]);
     }
     // public function updateUser(Request $request, $user_id)

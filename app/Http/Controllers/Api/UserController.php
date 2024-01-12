@@ -82,7 +82,7 @@ class UserController extends Controller
 
     public function logoutUser(Request $request)
     {
-        $request->user()->tokens()->delete();
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'status' => true,

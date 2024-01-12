@@ -4,8 +4,73 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f8309c6310d1fe09db8f4cd332aab52",
+    "content-hash": "47317e9c04f1b6eee0a1c3efc2d566e1",
     "packages": [
+        {
+            "name": "bepsvpt/blurhash",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bepsvpt/blurhash.git",
+                "reference": "ef9fe9180e65d2bbf1e6392ad57ec57a6d6eba21"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bepsvpt/blurhash/zipball/ef9fe9180e65d2bbf1e6392ad57ec57a6d6eba21",
+                "reference": "ef9fe9180e65d2bbf1e6392ad57ec57a6d6eba21",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "illuminate/support": "~8.0 || ~9.0 || ~10.0",
+                "intervention/image": "~2.7",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "~2.30",
+                "laravel/pint": "~1.5",
+                "orchestra/testbench": "~6.27 || ~7.24 || ~8.3",
+                "phpstan/phpstan": "~1.10",
+                "phpunit/phpunit": "~9.6 || ~10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "BlurHash": "Bepsvpt\\Blurhash\\Facades\\BlurHash"
+                    },
+                    "providers": [
+                        "Bepsvpt\\Blurhash\\BlurHashServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Bepsvpt\\Blurhash\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "bepsvpt",
+                    "email": "og7lsrszah6y3lz@infinitefa.email"
+                }
+            ],
+            "description": "A PHP implementation of BlurHash with Laravel integration.",
+            "homepage": "https://github.com/bepsvpt/blurhash",
+            "keywords": [
+                "blurhash",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/bepsvpt/blurhash/issues",
+                "source": "https://github.com/bepsvpt/blurhash/tree/2.1.1"
+            },
+            "time": "2023-04-24T14:00:45+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.11.0",
