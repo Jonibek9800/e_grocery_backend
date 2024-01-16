@@ -16,7 +16,7 @@ class MyPlaceController extends Controller
     public function get_product_image($image)
     {
         //
-        $url = public_path("storage/img/products/" . $image);
+        $url = storage_path("app/public/img/products/" . $image);
         if (File::exists($url)) {
             return response()->file($url);
         }
@@ -24,7 +24,7 @@ class MyPlaceController extends Controller
 
     public function get_category_image($image)
     {
-        $url = public_path("storage/img/categories/" . $image);
+        $url = storage_path("app/public/img/categories/" . $image);
         if (File::exists($url)) {
             return response()->file($url);
         }

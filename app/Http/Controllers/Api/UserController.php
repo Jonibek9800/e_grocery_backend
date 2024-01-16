@@ -99,11 +99,9 @@ class UserController extends Controller
                 $poster = $request->file('poster');
 
                 $poster_format = $poster->getClientOriginalExtension();
-
                 $poster_name = "image_" . Str::random(30) . "." . $poster_format;
                 $save_poster = Image::make($poster);
-
-                $save_poster->resize(300, 250, function ($constrains) {
+                $save_poster->resize(300, 300, function ($constrains) {
                     $constrains->aspectRatio();
                 });
                 if ($user->poster_path) {
