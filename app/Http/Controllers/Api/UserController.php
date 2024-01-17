@@ -100,6 +100,7 @@ class UserController extends Controller
 
                 $poster_format = $poster->getClientOriginalExtension();
                 $poster_name = "image_" . Str::random(30) . "." . $poster_format;
+                // return $poster;
                 $save_poster = Image::make($poster);
                 $save_poster->resize(300, 300, function ($constrains) {
                     $constrains->aspectRatio();
