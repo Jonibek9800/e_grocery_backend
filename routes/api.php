@@ -11,6 +11,8 @@ Route::post('/auth/register', [UserController::class, 'createUser']);
 Route::post('/auth/login', [UserController::class, 'loginUser']);
 Route::get('/get/token', [UserController::class, 'getToken']);
 
+Route::get("/get/slider/posters", [MyPlaceController::class, 'get_slider_poster']);
+
 Route::get('/get/categories', [MyPlaceController::class, 'get_categories']);
 Route::get('/get/category/image/{image}', [MyPlaceController::class, 'get_category_image']);
 
@@ -30,9 +32,15 @@ Route::middleware("auth:sanctum")->group(function () {
 
     Route::post("/create/product", [AdminController::class, "create_product"]);
     Route::post("/update/product", [AdminController::class, "update_product"]);
+    Route::delete("delete/product/{id}", [AdminController::class, "remove_product"]);
 
     Route::post("/create/category", [AdminController::class, "create_category"]);
-    Route::post("/update/product/{category_id}", [AdminController::class, "update_category"]);
+    Route::post("/update/product/{id}", [AdminController::class, "update_category"]);
+    Route::delete("/delete/category/{id}", [AdminController::class, "remove_category"]);
+
+    Route::post("add/slider/poster", [AdminController::class, "add_carousel_poster"]);
+    Route::post("update/slider/poster/{id}", [AdminController::class, "update_carousel_poster"]);
+    Route::delete("delete/slider/poster/{id}", [AdminController::class, "remove_poster"]);
 
     Route::get("/get/users", [AdminController::class, "get_users"]);
     Route::get("get/user/role", [AdminController::class, "get_user_role"]);

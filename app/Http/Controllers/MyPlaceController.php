@@ -37,43 +37,15 @@ class MyPlaceController extends Controller
             return response()->file($url);
         }
     }
-    //get_product_two
-    // public function get_product_two(Request $request)
-    // {
-    //     try {
-    //         $user = auth('sanctum')->user();
-    //         $products = null;
-    //         if ($request->get('limit')) {
-    //             $products = Product::with(['inFavorite' => function ($sql) use ($user) {
-    //                 $sql->where('user_id', $user->id);
-    //             }])->limit($request->get('limit'))
-    //                 ->orderBy($request->get('order_name'), $request->get('method'))
-    //                 ->paginate();
-    //         } else if ($request->filled('search')) {
-    //             $products = Product::where("name", 'like', "%{$request->get('search')}%")
-    //                 ->with(['inFavorite' => function ($sql) use ($user) {
-    //                     $sql->where('user_id', $user->id);
-    //                 }])
-    //                 ->orderBy($request->get('order_name'), $request->get('method'))
-    //                 ->paginate();
-    //         } else {
-    //             $products = Product::with(['inFavorite' => function ($sql) use ($user) {
-    //                 $sql->where('user_id', $user->id);
-    //             }])
-    //                 ->orderBy($request->get('order_name'), $request->get('method'))
-    //                 ->paginate();
-    //         }
-    //         return response()->json([
-    //             'success' => true,
-    //             "products" => $products
-    //         ]);
-    //     } catch (\Throwable $th) {
-    //         return response()->json([
-    //             "status" => false,
-    //             "message" => $th->getMessage(),
-    //         ], 500);
-    //     }
-    // }
+
+    public function get_carousel_image($image)
+    {
+        $url = storage_path("app/public/img/carousel/" . $image);
+        if (File::exists($url)) {
+            return response()->file($url);
+        }
+    }
+    
 
     public function get_products(Request $request)
     {
@@ -114,11 +86,6 @@ class MyPlaceController extends Controller
             "products" => $products
         ]);
     }
-
-    // public function create_product(Request $request)
-    // {
-    //     Product::factory()->count(50)->create();
-    // }
     public function get_categories(Request $request)
     {
         $categories = null;
@@ -133,18 +100,6 @@ class MyPlaceController extends Controller
         ]);
     }
 
-    // public function setFavoriteProduct(Request $request)
-    // {
-    //     $favorite_product = WishList::create([
-    //         "user_id" => $request['user_id'],
-    //         "product_id" => $request['product_id']
-    //     ]);
-
-    //     return response()->json([
-    //         "success" => true,
-    //         "favorite_product" => $favorite_product
-    //     ]);
-    // }
     public function getFavoriteProducts(Request $request)
     {
         // return 1;

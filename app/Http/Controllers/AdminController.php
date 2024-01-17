@@ -123,62 +123,6 @@ class AdminController extends Controller
             "message" => "dropped user successfully"
         ]);
     }
-    // public function updateUser(Request $request, $user_id)
-    // {
-
-    //     try {
-    //         $user = User::find($user_id);
-    //         if ($request->file('poster')) {
-    //             $poster = $request->file('poster');
-
-    //             $poster_format = $poster->getClientOriginalExtension();
-
-    //             $poster_name = "image_" . Str::random(30) . "." . $poster_format;
-    //             $save_poster = Image::make($poster);
-
-    //             $save_poster->resize(300, 250, function ($constrains) {
-    //                 $constrains->aspectRatio();
-    //             });
-    //             if ($user->poster_path) {
-    //                 if (File::exists(storage_path('app/public/img/persons/' . $user->poster_path))) {
-    //                     File::delete(storage_path('app/public/img/persons/' . $user->poster_path));
-    //                 }
-    //             }
-    //             $save_poster->save(storage_path('app/public/img/persons/' . $poster_name));
-
-
-    //             $user->update([
-    //                 "poster_path" => $poster_name,
-    //                 "name" => $request->get('name'),
-    //                 'email' => $request->get('email'),
-    //                 "phone_number" => $request->get('phone_number')
-    //             ]);
-    //             // return "-1";
-    //             return response()->json([
-    //                 "status" => true,
-    //                 "user" => $user
-    //             ]);
-    //         } else {
-    //             $user->update([
-    //                 "poster_path" => null,
-    //                 "name" => $request->get('name'),
-    //                 'email' => $request->get('email'),
-    //                 "phone_number" => $request->get('phone_number')
-    //             ]);
-    //             // return "1";
-    //             return response()->json([
-    //                 "status" => true,
-    //                 "user" => $user
-    //             ]);
-    //         }
-    //     } catch (\Throwable $th) {
-    //         return response()->json([
-    //             'status' => false,
-    //             'message' => $th->getMessage(),
-    //         ], 500);
-    //     }
-    // }
-
 
     public function create_product(Request $request)
     {
@@ -260,13 +204,19 @@ class AdminController extends Controller
             });
             $save_poster->save(storage_path('app/public/img/categories/' . $poster_name));
 
-            Category::create([
+            $category = Category::create([
                 "poster_path" => $poster_name,
                 "title" => $request->get('title'),
             ]);
-            return response(['success' => true]);
+            return response([
+                'success' => true,
+                "category" => $category,
+            ]);
         } else {
-            return response(['success' => false, 'message' => 'no images']);
+            return response([
+                'success' => false, 
+                'message' => 'Photo is required to add'
+            ]);
         }
     }
 
@@ -316,7 +266,16 @@ class AdminController extends Controller
             "message" => "droped category successfully"
         ]);
     }
-    public function create_carousel_poster(Request $request)
+
+    public function get_carousel_poster(Request $request)
+    {
+        $carousel_poster = CarouselPoster::get();
+        return response()->json([
+            "success" => true,
+            "carousel_poster" => $carousel_poster
+        ]);
+    }
+    public function add_carousel_poster(Request $request)
     {
         if ($request->file('poster')) {
             $poster = $request->file('poster');
