@@ -96,13 +96,13 @@ class MyPlaceController extends Controller
         }
 
         return response()->json([
+            'success' => true,
             'categories' => $categories,
         ]);
     }
 
     public function getFavoriteProducts(Request $request)
     {
-        // return 1;
         try {
             $favorite_products = WishList::where('user_id', $request['user_id'])->with('product')->get();
 

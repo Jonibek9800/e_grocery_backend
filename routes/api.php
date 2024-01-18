@@ -11,7 +11,8 @@ Route::post('/auth/register', [UserController::class, 'createUser']);
 Route::post('/auth/login', [UserController::class, 'loginUser']);
 Route::get('/get/token', [UserController::class, 'getToken']);
 
-Route::get("/get/slider/posters", [MyPlaceController::class, 'get_slider_poster']);
+Route::get("/get/sliders", [AdminController::class, 'get_sliders']);
+Route::get("/get/carousel/posters/{image}", [MyPlaceController::class, 'get_carousel_image']);
 
 Route::get('/get/categories', [MyPlaceController::class, 'get_categories']);
 Route::get('/get/category/image/{image}', [MyPlaceController::class, 'get_category_image']);
@@ -24,18 +25,17 @@ Route::get("/get/user/image/{image}", [MyPlaceController::class, "get_user_image
 
 Route::middleware("auth:sanctum")->group(function () {
     Route::get("/logout", [UserController::class, "logoutUser"]);
-    Route::post("/update/{user_id}", [UserController::class, "update_user"]);
     Route::post("/create/check_details", [OrderController::class, "check_details"]);
     Route::get("/get/checks", [OrderController::class, "get_checks"]);
     Route::get("/get/favorite", [MyPlaceController::class, "getFavoriteProducts"]);
     Route::post("/toggle/favorite", [MyPlaceController::class, "toggleFavoriteProducte"]);
 
-    Route::post("/create/product", [AdminController::class, "create_product"]);
-    Route::post("/update/product", [AdminController::class, "update_product"]);
-    Route::delete("delete/product/{id}", [AdminController::class, "remove_product"]);
+    Route::post("/add/product", [AdminController::class, "create_product"]);
+    Route::post("/update/product/{id}", [AdminController::class, "update_product"]);
+    Route::delete("/delete/product/{id}", [AdminController::class, "remove_product"]);
 
-    Route::post("/create/category", [AdminController::class, "create_category"]);
-    Route::post("/update/product/{id}", [AdminController::class, "update_category"]);
+    Route::post("/add/category", [AdminController::class, "create_category"]);
+    Route::post("/update/category/{id}", [AdminController::class, "update_category"]);
     Route::delete("/delete/category/{id}", [AdminController::class, "remove_category"]);
 
     Route::post("add/slider/poster", [AdminController::class, "add_carousel_poster"]);
@@ -44,6 +44,7 @@ Route::middleware("auth:sanctum")->group(function () {
 
     Route::get("/get/users", [AdminController::class, "get_users"]);
     Route::get("get/user/role", [AdminController::class, "get_user_role"]);
+    Route::post("/update/{user_id}", [UserController::class, "update_user"]);
     Route::post("/create/user", [AdminController::class, "create_user"]);
     Route::delete("/delete/user/{id}", [AdminController::class, "remove_user"]);
 });

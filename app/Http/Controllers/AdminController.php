@@ -191,32 +191,39 @@ class AdminController extends Controller
 
     public function create_category(Request $request)
     {
-        if ($request->file('poster')) {
-            $poster = $request->file('poster');
-
-            $poster_format = $poster->getClientOriginalExtension();
-
-            $poster_name = "image_" . Str::random(30) . "." . $poster_format;
-            $save_poster = Image::make($poster);
-
-            $save_poster->resize(300, 300, function ($constrains) {
-                $constrains->aspectRatio();
-            });
-            $save_poster->save(storage_path('app/public/img/categories/' . $poster_name));
-
-            $category = Category::create([
-                "poster_path" => $poster_name,
-                "title" => $request->get('title'),
-            ]);
-            return response([
-                'success' => true,
-                "category" => $category,
-            ]);
-        } else {
-            return response([
-                'success' => false, 
-                'message' => 'Photo is required to add'
-            ]);
+        try {
+            if ($request->file('poster')) {
+                $poster = $request->file('poster');
+    
+                $poster_format = $poster->getClientOriginalExtension();
+    
+                $poster_name = "image_" . Str::random(30) . "." . $poster_format;
+                $save_poster = Image::make($poster);
+    
+                $save_poster->resize(300, 300, function ($constrains) {
+                    $constrains->aspectRatio();
+                });
+                $save_poster->save(storage_path('app/public/img/categories/' . $poster_name));
+    
+                $category = Category::create([
+                    "poster_path" => $poster_name,
+                    "title" => $request->get('title'),
+                ]);
+                return response([
+                    'success' => true,
+                    "category" => $category,
+                ]);
+            } else {
+                return response([
+                    'success' => false, 
+                    'message' => 'Photo is required to add'
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                "status" => false,
+                "message" => $th->getMessage(),
+            ], 200);
         }
     }
 
@@ -256,9 +263,9 @@ class AdminController extends Controller
             ]);
         }
     }
-    public function remove_category($category_id)
+    public function remove_category($id)
     {
-        $category = Product::find($category_id);
+        $category = Category::find($id);
         $category->delete();
 
         return response()->json([
@@ -267,7 +274,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function get_carousel_poster(Request $request)
+    public function get_sliders(Request $request)
     {
         $carousel_poster = CarouselPoster::get();
         return response()->json([
