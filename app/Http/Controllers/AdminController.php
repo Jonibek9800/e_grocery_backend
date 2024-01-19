@@ -139,16 +139,16 @@ class AdminController extends Controller
             });
             $save_poster->save(storage_path('app/public/img/products/' . $poster_name));
 
-            Product::create([
+            $product = Product::create([
                 "poster_path" => $poster_name,
                 "name" => $request->get('name'),
                 "price" => $request->get('price'),
                 "description" => $request->get('description'),
                 "category_id" => $request->get('category_id'),
             ]);
-            return response(['success' => true]);
+            return response(['success' => true, "product" => $product,]);
         } else {
-            return response(['success' => false, 'message' => 'no images']);
+            return response(['success' => false, 'message' => 'no images1']);
         }
     }
 
@@ -194,17 +194,17 @@ class AdminController extends Controller
         try {
             if ($request->file('poster')) {
                 $poster = $request->file('poster');
-    
+
                 $poster_format = $poster->getClientOriginalExtension();
-    
+
                 $poster_name = "image_" . Str::random(30) . "." . $poster_format;
                 $save_poster = Image::make($poster);
-    
+
                 $save_poster->resize(300, 300, function ($constrains) {
                     $constrains->aspectRatio();
                 });
                 $save_poster->save(storage_path('app/public/img/categories/' . $poster_name));
-    
+
                 $category = Category::create([
                     "poster_path" => $poster_name,
                     "title" => $request->get('title'),
@@ -215,7 +215,7 @@ class AdminController extends Controller
                 ]);
             } else {
                 return response([
-                    'success' => false, 
+                    'success' => false,
                     'message' => 'Photo is required to add'
                 ]);
             }
@@ -227,9 +227,9 @@ class AdminController extends Controller
         }
     }
 
-    public function update_category(Request $request, $category_id)
+    public function update_category(Request $request, $id)
     {
-        $category = Category::find($category_id);
+        $category = Category::find($id);
         if ($request->file('poster')) {
             $poster = $request->file('poster');
 
@@ -254,7 +254,8 @@ class AdminController extends Controller
             ]);
             return response()->json([
                 "success" => true,
-                "message" => "category updating successfully"
+                "message" => "category updating successfully",
+                "category" => $category
             ]);
         } else {
             $category->update([
@@ -266,6 +267,11 @@ class AdminController extends Controller
     public function remove_category($id)
     {
         $category = Category::find($id);
+        if ($category->poster_path) {
+            if (File::exists(storage_path('app/public/img/categories/' . $category->poster_path))) {
+                File::delete(storage_path('app/public/img/categories/' . $category->poster_path));
+            }
+        }
         $category->delete();
 
         return response()->json([

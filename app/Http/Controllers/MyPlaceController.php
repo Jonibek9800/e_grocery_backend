@@ -27,6 +27,8 @@ class MyPlaceController extends Controller
         $url = storage_path("app/public/img/categories/" . $image);
         if (File::exists($url)) {
             return response()->file($url);
+        } else {
+            return response()->file(public_path("default_image/person.png"));
         }
     }
 
