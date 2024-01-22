@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Scout\Searchable;
+// use Laravel\Scout\Searchable;s
 
 class Product extends Model
 {
-    use HasFactory, Searchable;
+    use HasFactory;
 
     protected $table = 'products';
 
@@ -16,12 +16,12 @@ class Product extends Model
 
     protected $guarded = ['id']; // только для защиты полей
 
-    public function toSearchableArray()
-    {
-        return [
-            'name' => $this->name,
-        ];
-    }
+    // public function toSearchableArray()
+    // {
+    //     return [
+    //         'name' => $this->name,
+    //     ];
+    // }
 
     public function inFavorite()
     {
