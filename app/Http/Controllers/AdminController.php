@@ -381,15 +381,20 @@ class AdminController extends Controller
                 "start_date" => $request->get('start_date'),
                 "expiration_date" => $request->get('expiration_date'),
             ]);
-            return response(['success' => true]);
+            return response(['success' => true, "poster" => $poster]);
         } else {
-            return response(['success' => false, 'message' => 'no images']);
+            $poster::update([
+                "poster_path" => $$poster->poster_path,
+                "start_date" => $request->get('start_date'),
+                "expiration_date" => $request->get('expiration_date'),
+            ]);
+            return response(['success' => true, "poster" => $poster,]);
         }
     }
 
-    public function remove_poster($poster_id)
+    public function remove_poster($id)
     {
-        $poster = CarouselPoster::find($poster_id);
+        $poster = CarouselPoster::find($id);
         if ($poster != null) {
             $poster->delete();
         }
