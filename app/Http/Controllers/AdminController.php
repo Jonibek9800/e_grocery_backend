@@ -343,7 +343,7 @@ class AdminController extends Controller
                 $constrains->aspectRatio();
             });
             $save_poster->save(storage_path('app/public/img/carousel/' . $poster_name));
-
+            
             CarouselPoster::create([
                 "poster_path" => $poster_name,
                 "start_date" => $request->get('start_date'),
