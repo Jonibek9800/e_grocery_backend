@@ -38,12 +38,12 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/update/category/{id}", [AdminController::class, "update_category"]);
     Route::delete("/delete/category/{id}", [AdminController::class, "remove_category"]);
 
-    Route::post("add/slider/poster", [AdminController::class, "add_carousel_poster"]);
-    Route::post("update/slider/poster/{id}", [AdminController::class, "update_carousel_poster"]);
-    Route::delete("delete/slider/poster/{id}", [AdminController::class, "remove_poster"]);
+    Route::post("/add/slider/poster", [AdminController::class, "add_carousel_poster"]);
+    Route::post("/update/slider/poster/{id}", [AdminController::class, "update_carousel_poster"]);
+    Route::delete("/delete/slider/poster/{id}", [AdminController::class, "remove_poster"]);
 
     Route::get("/get/users", [AdminController::class, "get_users"]);
-    Route::get("get/user/role", [AdminController::class, "get_user_role"]);
+    Route::get("/get/user/role", [AdminController::class, "get_user_role"]);
     Route::post("/update/{user_id}", [UserController::class, "update_user"]);
     Route::post("/create/user", [AdminController::class, "create_user"]);
     Route::delete("/delete/user/{id}", [AdminController::class, "remove_user"]);

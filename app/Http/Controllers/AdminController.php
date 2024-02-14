@@ -152,41 +152,82 @@ class AdminController extends Controller
         }
     }
 
-    public function update_product(Request $request, $product_id)
+    public function update_product(Request $request, $id)
     {
-        $product = Product::find($product_id);
-        if ($request->file('poster')) {
-            $poster = $request->file('poster');
-
-            $poster_format = $poster->getClientOriginalExtension();
-
-            $poster_name = "image_" . Str::random(30) . "." . $poster_format;
-            $save_poster = Image::make($poster);
-
-            $save_poster->resize(300, 300, function ($constrains) {
-                $constrains->aspectRatio();
-            });
-            if ($product->poster_path) {
-                if (File::exists(storage_path('app/public/img/products/' . $product->poster_path))) {
-                    File::delete(storage_path('app/public/img/products/' . $product->poster_path));
+        $product = Product::find($id);
+        try {
+            if ($request->file('poster')) {
+                $poster = $request->file('poster');
+    
+                $poster_format = $poster->getClientOriginalExtension();
+    
+                $poster_name = "image_" . Str::random(30) . "." . $poster_format;
+                $save_poster = Image::make($poster);
+    
+                $save_poster->resize(300, 300, function ($constrains) {
+                    $constrains->aspectRatio();
+                });
+                if ($product->poster_path) {
+                    if (File::exists(storage_path('app/public/img/products/' . $product->poster_path))) {
+                        File::delete(storage_path('app/public/img/products/' . $product->poster_path));
+                    }
                 }
+                $save_poster->save(storage_path('app/public/img/products/' . $poster_name));
+                $product->update([
+                    "poster_path" => $request->get('poster'),
+                    "name" => $request->get('name'),
+                    "price" => $request->get('price'),
+                    "description" => $request->get('description'),
+                    "category_id" => $request->get('category_id'),
+                ]);
+    
+                return response()->json([
+                    "success" => true,
+                    "product" => $product
+                ]);
+            } else{
+                $product->update([
+                    "poster_path" => $product->poster_path,
+                    "name" => $request->get('name'),
+                    "price" => $request->get('price'),
+                    "description" => $request->get('description'),
+                    "category_id" => $request->get('category_id'),
+                ]);
+    
+                return response()->json([
+                    "success" => true,
+                    "product" => $product
+                ]);
             }
-            $save_poster->save(storage_path('app/public/img/products/' . $poster_name));
-            $product->update([
-                "poster_path" => $request->get('poster_path'),
-            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "status" => false,
+                "message" => $th->getMessage(),
+            ], 500);
         }
     }
 
-    public function remove_product($product_id)
+    public function remove_product($id)
     {
-        $product = Product::find($product_id);
+        try {
+            $product = Product::find($id);
+        if ($product->poster_path) {
+            if (File::exists(storage_path('app/public/img/products/' . $product->poster_path))) {
+                File::delete(storage_path('app/public/img/products/' . $product->poster_path));
+            }
+        }
         $product->delete();
 
         return response()->json([
             "success" => true,
             "message" => "droped product successfully"
         ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "status" => false,
+                "message" => $th->getMessage(),
+            ], 200);
+        }
     }
 
     public function create_category(Request $request)
@@ -223,7 +264,7 @@ class AdminController extends Controller
             return response()->json([
                 "status" => false,
                 "message" => $th->getMessage(),
-            ], 200);
+            ], 500);
         }
     }
 
@@ -280,7 +321,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function get_sliders(Request $request)
+    public function get_sliders()
     {
         $carousel_poster = CarouselPoster::get();
         return response()->json([
@@ -317,10 +358,9 @@ class AdminController extends Controller
         }
     }
 
-    public function update_carousel_poster(Request $request, $id)
+    public function update_carousel_poster(Request $request, $poster_id)
     {
-        try {
-            $poster = CarouselPoster::find($id);
+        $poster = CarouselPoster::find($poster_id);
         if ($request->file('poster')) {
             $poster_path = $request->file('poster');
 
@@ -344,11 +384,14 @@ class AdminController extends Controller
                 "start_date" => $request->get('start_date'),
                 "expiration_date" => $request->get('expiration_date'),
             ]);
-            return response()->json([
-                ['success' => true, "poster" => $poster]
-            ]);
+            return response(['success' => true]);
         } else {
-            return response(['success' => false, 'message' => 'no images']);
+            $poster::update([
+                "poster_path" => $$poster->poster_path,
+                "start_date" => $request->get('start_date'),
+                "expiration_date" => $request->get('expiration_date'),
+            ]);
+            return response(['success' => true, "poster" => $poster,]);
         }
         } catch (\Throwable $th) {
             return response()->json([
@@ -358,9 +401,9 @@ class AdminController extends Controller
         }
     }
 
-    public function remove_poster($poster_id)
+    public function remove_poster($id)
     {
-        $poster = CarouselPoster::find($poster_id);
+        $poster = CarouselPoster::find($id);
         if ($poster != null) {
             $poster->delete();
         }
