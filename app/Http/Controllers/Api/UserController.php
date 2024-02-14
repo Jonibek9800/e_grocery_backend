@@ -165,7 +165,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage(),
-            ], 200);
+            ], 500);
         }
     }
 

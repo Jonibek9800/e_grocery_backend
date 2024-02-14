@@ -303,20 +303,24 @@ class AdminController extends Controller
             });
             $save_poster->save(storage_path('app/public/img/carousel/' . $poster_name));
 
-            CarouselPoster::create([
+            $poster = CarouselPoster::create([
                 "poster_path" => $poster_name,
                 "start_date" => $request->get('start_date'),
                 "expiration_date" => $request->get('expiration_date'),
             ]);
-            return response(['success' => true]);
+            return response( )->json([
+                'success' => true,
+                "poster" => $poster
+            ]);
         } else {
             return response(['success' => false, 'message' => 'no images']);
         }
     }
 
-    public function update_carousel_poster(Request $request, $poster_id)
+    public function update_carousel_poster(Request $request, $id)
     {
-        $poster = CarouselPoster::find($poster_id);
+        try {
+            $poster = CarouselPoster::find($id);
         if ($request->file('poster')) {
             $poster_path = $request->file('poster');
 
@@ -335,14 +339,22 @@ class AdminController extends Controller
             }
             $save_poster->save(storage_path('app/public/img/carousel/' . $poster_name));
 
-            $poster::update([
+            $poster->update([
                 "poster_path" => $poster_name,
                 "start_date" => $request->get('start_date'),
                 "expiration_date" => $request->get('expiration_date'),
             ]);
-            return response(['success' => true]);
+            return response()->json([
+                ['success' => true, "poster" => $poster]
+            ]);
         } else {
             return response(['success' => false, 'message' => 'no images']);
+        }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 200);
         }
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MyPlaceController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [MyPlaceController::class, 'index']);
+Route::get('/', [HomeController::class, 'index']);
 
 Auth::routes();
 
