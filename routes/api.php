@@ -11,44 +11,43 @@ Route::post('/auth/register', [UserController::class, 'createUser']);
 Route::post('/auth/login', [UserController::class, 'loginUser']);
 Route::get('/get/token', [UserController::class, 'getToken']);
 
-Route::get("/get/sliders", [AdminController::class, 'get_sliders']);
-Route::get("/get/carousel/posters/{image}", [MyPlaceController::class, 'get_carousel_image']);
+Route::get("/get/sliders", [AdminController::class, 'getSliders']);
+Route::get("/get/carousel/posters/{image}", [MyPlaceController::class, 'getCarouselImage']);
 
-Route::get('/get/categories', [MyPlaceController::class, 'get_categories']);
-Route::get('/get/category/image/{image}', [MyPlaceController::class, 'get_category_image']);
+Route::get('/get/categories', [MyPlaceController::class, 'getCategories']);
+Route::get('/get/category/image/{image}', [MyPlaceController::class, 'getCategoryImage']);
 
-Route::get('/get/products', [MyPlaceController::class, 'get_products']);
-Route::get('/get/products/{category_id}', [MyPlaceController::class, 'get_products_by_category']);
-Route::get('/get/product/image/{image}', [MyPlaceController::class, 'get_product_image']);
-
-Route::get("/get/user/image/{image}", [MyPlaceController::class, "get_user_image"]);
+Route::get('/get/products', [MyPlaceController::class, 'getProducts']);
+Route::get('/get/products/{category_id}', [MyPlaceController::class, 'getProductsByCategory']);
+Route::get('/get/product/image/{image}', [MyPlaceController::class, 'getProductImage']);
+ 
+Route::get("/get/user/image/{image}", [MyPlaceController::class, "getUserImage"]);
 
 Route::middleware("auth:sanctum")->group(function () {
     Route::get("/logout", [UserController::class, "logoutUser"]);
-    Route::post("/create/check_details", [OrderController::class, "check_details"]);
-    Route::get("/get/checks", [OrderController::class, "get_checks"]);
+    Route::post("/create/check_details", [OrderController::class, "checkDetails"]);
+    Route::get("/get/checks", [OrderController::class, "getChecks"]);
     Route::get("/get/favorite", [MyPlaceController::class, "getFavoriteProducts"]);
     Route::post("/toggle/favorite", [MyPlaceController::class, "toggleFavoriteProducte"]);
 
-    Route::post("/add/product", [AdminController::class, "create_product"]);
-    Route::post("/update/product/{id}", [AdminController::class, "update_product"]);
-    Route::delete("/delete/product/{id}", [AdminController::class, "remove_product"]);
+    Route::post("/add/product", [AdminController::class, "createProduct"]);
+    Route::post("/update/product/{id}", [AdminController::class, "updateProduct"]);
+    Route::delete("/delete/product/{id}", [AdminController::class, "removeProduct"]);
 
-    Route::post("/add/category", [AdminController::class, "create_category"]);
-    Route::post("/update/category/{id}", [AdminController::class, "update_category"]);
-    Route::delete("/delete/category/{id}", [AdminController::class, "remove_category"]);
+    Route::post("/add/category", [AdminController::class, "createCategory"]);
+    Route::post("/update/category/{id}", [AdminController::class, "updateCategory"]);
+    Route::delete("/delete/category/{id}", [AdminController::class, "removeCategory"]);
 
-    Route::post("/add/slider/poster", [AdminController::class, "add_carousel_poster"]);
-    Route::post("/update/slider/poster/{id}", [AdminController::class, "update_carousel_poster"]);
-    Route::delete("/delete/slider/poster/{id}", [AdminController::class, "remove_poster"]);
+    Route::post("/add/slider/poster", [AdminController::class, "addCarouselPoster"]);
+    Route::post("/update/slider/poster/{id}", [AdminController::class, "updateCarouselPoster"]);
+    Route::delete("/delete/slider/poster/{id}", [AdminController::class, "removePoster"]);
 
-    Route::get("/get/users", [AdminController::class, "get_users"]);
-    Route::get("/get/user/role", [AdminController::class, "get_user_role"]);
-    Route::post("/update/{user_id}", [UserController::class, "update_user"]);
-    Route::post("/create/user", [AdminController::class, "create_user"]);
-    Route::delete("/delete/user/{id}", [AdminController::class, "remove_user"]);
+    Route::get("/get/users", [AdminController::class, "getUsers"]);
+    Route::get("/get/user/role", [AdminController::class, "getUserRole"]);
+    Route::post("/update/{user_id}", [UserController::class, "updateUser"]);
+    Route::post("/create/user", [AdminController::class, "createUser"]);
+    Route::delete("/delete/user/{id}", [AdminController::class, "removeUser"]);
 
-    Route::post("/update/check/{id}", [AdminController::class, "update_check"]);
-    Route::delete("/delete/check/{id}", [AdminController::class, "update_check"]);
-    // Route::post("/update/check/{id}", [AdminController::class, "update_check"]);
+    Route::get("/get/checks", [AdminController::class, "getOrders"]);
+    Route::post("/update/check/{id}", [AdminController::class, "updateOrder"]);
 });

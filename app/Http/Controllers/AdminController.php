@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CarouselPoster;
 use App\Models\Category;
+use App\Models\Check;
 use App\Models\Product;
 use App\Models\RoleOfUsers;
 use App\Models\User;
@@ -16,25 +17,24 @@ use Intervention\Image\ImageManagerStatic as Image;
 class AdminController extends Controller
 {
 
-    public function get_users()
+    public function getUsers()
     {
         $user = auth('sanctum')->user();
         $users = null;
         if ($user->role_of_user_id == 2) {
             $users = User::where("id", "!=", $user->id)->get();
         }
-
         return response()->json([
             "success" => true,
             "users" => $users
         ]);
     }
 
-    public function get_user_role()
+    public function getUserRole()
     {
         RoleOfUsers::get();
     }
-    public function create_user(Request $request)
+    public function createUser(Request $request)
     {
         try {
             $user = User::where("email", $request->get("email"))->first();
@@ -110,10 +110,8 @@ class AdminController extends Controller
         }
     }
 
-    public function remove_user($id)
+    public function removeUser($id)
     {
-        // $user = new User();
-        // return $user;
         $user = User::find($id);
         $user->tokens()->delete();
         $user->delete();
@@ -124,7 +122,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function create_product(Request $request)
+    public function createProduct(Request $request)
     {
         if ($request->file('poster')) {
             $poster = $request->file('poster');
@@ -152,18 +150,18 @@ class AdminController extends Controller
         }
     }
 
-    public function update_product(Request $request, $id)
+    public function updateProduct(Request $request, $id)
     {
         $product = Product::find($id);
         try {
             if ($request->file('poster')) {
                 $poster = $request->file('poster');
-    
+
                 $poster_format = $poster->getClientOriginalExtension();
-    
+
                 $poster_name = "image_" . Str::random(30) . "." . $poster_format;
                 $save_poster = Image::make($poster);
-    
+
                 $save_poster->resize(300, 300, function ($constrains) {
                     $constrains->aspectRatio();
                 });
@@ -180,12 +178,12 @@ class AdminController extends Controller
                     "description" => $request->get('description'),
                     "category_id" => $request->get('category_id'),
                 ]);
-    
+
                 return response()->json([
                     "success" => true,
                     "product" => $product
                 ]);
-            } else{
+            } else {
                 $product->update([
                     "poster_path" => $product->poster_path,
                     "name" => $request->get('name'),
@@ -193,7 +191,7 @@ class AdminController extends Controller
                     "description" => $request->get('description'),
                     "category_id" => $request->get('category_id'),
                 ]);
-    
+
                 return response()->json([
                     "success" => true,
                     "product" => $product
@@ -207,30 +205,30 @@ class AdminController extends Controller
         }
     }
 
-    public function remove_product($id)
+    public function removeProduct($id)
     {
         try {
             $product = Product::find($id);
-        if ($product->poster_path) {
-            if (File::exists(storage_path('app/public/img/products/' . $product->poster_path))) {
-                File::delete(storage_path('app/public/img/products/' . $product->poster_path));
+            if ($product->poster_path) {
+                if (File::exists(storage_path('app/public/img/products/' . $product->poster_path))) {
+                    File::delete(storage_path('app/public/img/products/' . $product->poster_path));
+                }
             }
-        }
-        $product->delete();
+            $product->delete();
 
-        return response()->json([
-            "success" => true,
-            "message" => "droped product successfully"
-        ]);
+            return response()->json([
+                "success" => true,
+                "message" => "droped product successfully"
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 "status" => false,
                 "message" => $th->getMessage(),
-            ], 200);
+            ], 500);
         }
     }
 
-    public function create_category(Request $request)
+    public function createCategory(Request $request)
     {
         try {
             if ($request->file('poster')) {
@@ -268,7 +266,7 @@ class AdminController extends Controller
         }
     }
 
-    public function update_category(Request $request, $id)
+    public function updateCategory(Request $request, $id)
     {
         $category = Category::find($id);
         if ($request->file('poster')) {
@@ -303,9 +301,14 @@ class AdminController extends Controller
                 "poster_path" => $category->poster_path,
                 "title" => $request->get("title"),
             ]);
+            return response()->json([
+                "success" => true,
+                "message" => "category updating successfully",
+                "category" => $category
+            ]);
         }
     }
-    public function remove_category($id)
+    public function removeCategory($id)
     {
         $category = Category::find($id);
         if ($category->poster_path) {
@@ -321,7 +324,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function get_sliders()
+    public function getSliders()
     {
         $carousel_poster = CarouselPoster::get();
         return response()->json([
@@ -329,7 +332,7 @@ class AdminController extends Controller
             "carousel_poster" => $carousel_poster
         ]);
     }
-    public function add_carousel_poster(Request $request)
+    public function addCarouselPoster(Request $request)
     {
         if ($request->file('poster')) {
             $poster = $request->file('poster');
@@ -349,7 +352,7 @@ class AdminController extends Controller
                 "start_date" => $request->get('start_date'),
                 "expiration_date" => $request->get('expiration_date'),
             ]);
-            return response( )->json([
+            return response()->json([
                 'success' => true,
                 "poster" => $poster
             ]);
@@ -358,58 +361,130 @@ class AdminController extends Controller
         }
     }
 
-    public function update_carousel_poster(Request $request, $poster_id)
+    public function updateCarouselPoster(Request $request, $id)
     {
-        $poster = CarouselPoster::find($poster_id);
-        if ($request->file('poster')) {
-            $poster_path = $request->file('poster');
+        try {
+            $poster = CarouselPoster::find($id);
+            if ($request->file('poster')) {
+                $poster_path = $request->file('poster');
 
-            $poster_format = $poster_path->getClientOriginalExtension();
+                $poster_format = $poster_path->getClientOriginalExtension();
 
-            $poster_name = "image_" . Str::random(30) . "." . $poster_format;
-            $save_poster = Image::make($poster_path);
+                $poster_name = "image_" . Str::random(30) . "." . $poster_format;
+                $save_poster = Image::make($poster_path);
 
-            $save_poster->resize(300, 250, function ($constrains) {
-                $constrains->aspectRatio();
-            });
-            if ($poster->poster_path) {
-                if (File::exists(storage_path('app/public/img/persons/' . $poster->poster_path))) {
-                    File::delete(storage_path('app/public/img/persons/' . $poster->poster_path));
+                $save_poster->resize(300, 250, function ($constrains) {
+                    $constrains->aspectRatio();
+                });
+                if ($poster->poster_path) {
+                    if (File::exists(storage_path('app/public/img/persons/' . $poster->poster_path))) {
+                        File::delete(storage_path('app/public/img/persons/' . $poster->poster_path));
+                    }
                 }
-            }
-            $save_poster->save(storage_path('app/public/img/carousel/' . $poster_name));
+                $save_poster->save(storage_path('app/public/img/carousel/' . $poster_name));
 
-            $poster->update([
-                "poster_path" => $poster_name,
-                "start_date" => $request->get('start_date'),
-                "expiration_date" => $request->get('expiration_date'),
-            ]);
-            return response(['success' => true]);
-        } else {
-            $poster::update([
-                "poster_path" => $$poster->poster_path,
-                "start_date" => $request->get('start_date'),
-                "expiration_date" => $request->get('expiration_date'),
-            ]);
-            return response(['success' => true, "poster" => $poster,]);
-        }
+                $poster->update([
+                    "poster_path" => $poster_name,
+                    "start_date" => $request->get('start_date'),
+                    "expiration_date" => $request->get('expiration_date'),
+                ]);
+                return response()->json(['success' => true, "poster" => $poster]);
+            } else {
+                $poster->update([
+                    "poster_path" => $poster->poster_path,
+                    "start_date" => $request->get('start_date'),
+                    "expiration_date" => $request->get('expiration_date'),
+                ]);
+                return response()->json([
+                    'success' => true,
+                    "poster" => $poster,
+                ]);
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage(),
-            ], 200);
+            ], 500);
         }
     }
 
-    public function remove_poster($id)
+    public function removePoster($id)
     {
-        $poster = CarouselPoster::find($id);
-        if ($poster != null) {
-            $poster->delete();
+        try {
+            $poster = CarouselPoster::find($id);
+            if ($poster != null) {
+                $poster->delete();
+            } else {
+                return response()->json([
+                    "success" => false,
+                    "message" => "droped poster error"
+                ]);
+            }
+            return response()->json([
+                "success" => true,
+                "message" => "droped poster successfully"
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
         }
-        return response()->json([
-            "success" => true,
-            "message" => "droped poster successfully"
-        ]);
+    }
+
+    public function getOrders(Request $request)
+    {
+        try {
+            $checks = Check::with([
+                'details' => function ($element) {
+                    $element->with('product');
+
+                }
+            ])
+                ->get();
+            if ($checks != null) {
+                return response()->json([
+                    'success' => true,
+                    'checks' => $checks
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ckecks is not defined'
+                ]);
+            }
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function updateOrder(Request $request, $id)
+    {
+        try {
+            $check = Check::find($id);
+            if ($check != null) {
+                $check->update([
+                    'order_status' => $request->get('order_status'),
+                ]);
+                return response()->json([
+                    'success' => true,
+                    'check' => $check
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Check is not found'
+                ]);
+            }
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
     }
 }

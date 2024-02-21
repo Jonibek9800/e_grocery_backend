@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\File;
 class MyPlaceController extends Controller
 {
 
-    public function get_product_image($image)
+    public function getProductImage($image)
     {
         //
         $url = storage_path("app/public/img/products/" . $image);
@@ -22,7 +22,7 @@ class MyPlaceController extends Controller
         }
     }
 
-    public function get_category_image($image)
+    public function getCategoryImage($image)
     {
         $url = storage_path("app/public/img/categories/" . $image);
         if (File::exists($url)) {
@@ -32,7 +32,7 @@ class MyPlaceController extends Controller
         }
     }
 
-    public function get_user_image($image)
+    public function getUserImage($image)
     {
         $url = storage_path("app/public/img/persons/" . $image);
         if (File::exists($url)) {
@@ -40,7 +40,7 @@ class MyPlaceController extends Controller
         }
     }
 
-    public function get_carousel_image($image)
+    public function getCarouselImage($image)
     {
         $url = storage_path("app/public/img/carousel/" . $image);
         if (File::exists($url)) {
@@ -49,7 +49,7 @@ class MyPlaceController extends Controller
     }
     
 
-    public function get_products(Request $request)
+    public function getProducts(Request $request)
     {
         try {
             $user = auth('sanctum')->user();
@@ -79,7 +79,7 @@ class MyPlaceController extends Controller
     }
 
 
-    public function get_products_by_category(Request $request, $category_id)
+    public function getProductsByCategory(Request $request, $category_id)
     {
         $products = Product::where('category_id', $category_id)->get();
 
@@ -88,7 +88,7 @@ class MyPlaceController extends Controller
             "products" => $products
         ]);
     }
-    public function get_categories(Request $request)
+    public function getCategories(Request $request)
     {
         $categories = null;
         if ($request->get('limit')) {

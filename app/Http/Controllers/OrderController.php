@@ -20,7 +20,7 @@ class OrderController extends Controller
         return $chek;
     }
 
-    public function check_details(Request $request)
+    public function checkDetails(Request $request)
     {
         try {
             $check = $this->check(
@@ -58,7 +58,7 @@ class OrderController extends Controller
         }
     }
 
-    public function get_checks(Request $request) 
+    public function getChecks(Request $request) 
     {
         $checks = Check::where('user_id', $request['user_id'])
         ->with(['details' => function($element) {

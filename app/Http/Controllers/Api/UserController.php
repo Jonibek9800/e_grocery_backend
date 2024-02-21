@@ -90,7 +90,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function update_user(Request $request, $user_id)
+    public function updateUser(Request $request, $user_id)
     {
         try {
             $user = User::find($user_id);
